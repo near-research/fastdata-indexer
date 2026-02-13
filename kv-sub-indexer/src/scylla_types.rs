@@ -129,12 +129,12 @@ pub(crate) async fn create_tables(scylla_db: &ScyllaDb) -> anyhow::Result<()> {
             value text,
             PRIMARY KEY ((predecessor_id), current_account_id, key)
         )",
-        "CREATE MATERIALIZED VIEW mv_kv_key IF NOT EXISTS AS
+        "CREATE MATERIALIZED VIEW IF NOT EXISTS mv_kv_key AS
             SELECT * FROM s_kv
             WHERE key IS NOT NULL
             PRIMARY KEY((key), block_height, order_id, predecessor_id, current_account_id)
         ",
-        "CREATE MATERIALIZED VIEW mv_kv_cur_key IF NOT EXISTS AS
+        "CREATE MATERIALIZED VIEW IF NOT EXISTS mv_kv_cur_key AS
             SELECT * FROM s_kv
             WHERE key IS NOT NULL
             PRIMARY KEY((current_account_id), key, block_height, order_id, predecessor_id)
