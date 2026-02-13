@@ -14,6 +14,7 @@ members = [
     "suffix-fetcher",
     "fastfs-sub-indexer",
     "kv-sub-indexer",
+    "memo-indexer",
 ]
 
 [workspace.dependencies]
