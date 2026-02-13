@@ -64,9 +64,14 @@ impl ScyllaDb {
         let scylla_username = env::var("SCYLLA_USERNAME").expect("SCYLLA_USERNAME must be set");
         let scylla_password = env::var("SCYLLA_PASSWORD").expect("SCYLLA_PASSWORD must be set");
 
+        let tls_config = match env::var("SCYLLA_SSL_CA") {
+            Ok(_) => Some(create_rustls_client_config()),
+            Err(_) => None,
+        };
+
         let session: Session = SessionBuilder::new()
             .known_node(scylla_url)
-            .tls_context(Some(create_rustls_client_config()))
+            .tls_context(tls_config)
             .authenticator_provider(Arc::new(
                 scylla::authentication::PlainTextAuthenticator::new(
                     scylla_username,
