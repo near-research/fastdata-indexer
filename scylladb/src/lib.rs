@@ -96,7 +96,7 @@ impl ScyllaDb {
         scylla_session: Session,
         create_tables: bool,
     ) -> anyhow::Result<Self> {
-        // Self::create_keyspace(chain_id, &scylla_session).await?;
+        Self::create_keyspace(chain_id, &scylla_session).await?;
         scylla_session
             .use_keyspace(format!("fastdata_{chain_id}"), false)
             .await?;
@@ -141,7 +141,6 @@ impl ScyllaDb {
         Ok(scylla_db_session.prepare(query).await?)
     }
 
-    #[allow(unused)]
     pub async fn create_keyspace(
         chain_id: ChainId,
         scylla_session: &Session,
@@ -151,9 +150,9 @@ impl ScyllaDb {
                 format!(
                     "CREATE KEYSPACE IF NOT EXISTS fastdata_{chain_id}
                     WITH REPLICATION = {{
-                        'class': 'NetworkTopologyStrategy',
-                        'dc1': 3
-                    }} AND TABLETS = {{'enabled': true}};"
+                        'class': 'SimpleStrategy',
+                        'replication_factor': 1
+                    }};"
                 ),
                 &[],
             )
